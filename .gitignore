@@ -3,3 +3,4 @@ docs/
 temp_screen.png
 .agent
 .env
+startup_log.txt

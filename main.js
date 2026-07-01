@@ -156,8 +156,33 @@ ipcMain.handle('set-startup-setting', (event, openAtLogin) => {
   const filePath = getStartupFilePath();
   try {
     if (openAtLogin) {
-      const projectDir = __dirname;
-      const vbsContent = `Set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "cmd.exe /c cd /d ""${projectDir}"" && npm start", 0, False\n`;
+      const { execSync } = require('child_process');
+      const homePath = app.getPath('home');
+      let projectDir = __dirname;
+      
+      // 사용자 홈 디렉토리 한글 이름 깨짐 문제를 방지하기 위해 %USERPROFILE% 환경변수로 치환
+      if (projectDir.toLowerCase().startsWith(homePath.toLowerCase())) {
+        projectDir = '%USERPROFILE%' + projectDir.substring(homePath.length);
+      }
+      
+      let npmPath = 'npm';
+      try {
+        const npmPathOutput = execSync('where npm').toString().trim().split(/[\r\n]+/)[0];
+        if (npmPathOutput && fs.existsSync(npmPathOutput)) {
+          npmPath = npmPathOutput;
+          // npm 경로 또한 사용자 홈 디렉토리 내에 깔려있을 경우를 대비해 변수 치환 적용
+          if (npmPath.toLowerCase().startsWith(homePath.toLowerCase())) {
+            npmPath = '%USERPROFILE%' + npmPath.substring(homePath.length);
+          }
+        }
+      } catch (e) {
+        console.error('npm 절대경로 획득 실패:', e);
+      }
+
+      // 백슬래시 인코딩 호환성을 고려한 경로 조합
+      const logFilePath = projectDir + '\\startup_log.txt';
+      const vbsContent = `Set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "cmd.exe /c cd /d ""${projectDir}"" && ""${npmPath}"" start > ""${logFilePath}"" 2>&1", 0, False\n`;
+      
       fs.writeFileSync(filePath, vbsContent, 'utf-8');
       console.log('시작 프로그램 등록 완료:', filePath);
     } else {
@@ -175,6 +200,15 @@ ipcMain.handle('set-startup-setting', (event, openAtLogin) => {
 
 app.whenReady().then(() => {
   createTray();
+  
+  // 기존에 레지스트리에 잘못 등록되었을 수 있는 중복 항목 강제 제거 (충돌 방지)
+  try {
+    app.setLoginItemSettings({
+      openAtLogin: false
+    });
+  } catch (err) {
+    console.error('레지스트리 시작프로그램 정리 오류:', err);
+  }
   
   const ret = globalShortcut.register('Super+Shift+A', () => {
     triggerCaptureFlow();
