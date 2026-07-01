@@ -1,0 +1,25 @@
+{
+  "name": "capture-ai-assistant",
+  "version": "1.0.0",
+  "description": "Win+Shift+A screen capture and AI query assistant",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder"
+  },
+  "keywords": [
+    "electron",
+    "screenshot",
+    "gemini",
+    "ai"
+  ],
+  "author": "Antigravity",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.14.0",
+    "screenshot-desktop": "^1.15.0"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0"
+  }
+}
