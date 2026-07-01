@@ -129,7 +129,7 @@ ipcMain.handle('ask-ai', async (event, { prompt, base64Image }) => {
   const base64DataOnly = base64Image.split(',')[1];
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.1-flash-lite',
     contents: [
       prompt,
       {
