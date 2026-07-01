@@ -63,7 +63,7 @@ function showCaptureWindow(imagePath) {
   });
 
   captureWin.setIgnoreMouseEvents(false);
-  captureWin.loadFile('capture.html');
+  captureWin.loadFile(path.join(__dirname, 'ui', 'capture.html'));
   
   captureWin.webContents.once('did-finish-load', () => {
     captureWin.webContents.send('capture-image', imagePath);
@@ -89,7 +89,7 @@ function showQueryWindow(base64Image) {
     }
   });
 
-  queryWin.loadFile('query.html');
+  queryWin.loadFile(path.join(__dirname, 'ui', 'query.html'));
 
   queryWin.webContents.once('did-finish-load', () => {
     queryWin.webContents.send('query-image', base64Image);
