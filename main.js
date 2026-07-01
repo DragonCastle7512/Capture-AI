@@ -2,7 +2,7 @@ const { app, globalShortcut, Tray, Menu, nativeImage, BrowserWindow, ipcMain, sc
 const path = require('path');
 const screenshot = require('screenshot-desktop');
 const fs = require('fs');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { GoogleGenAI } = require('@google/genai');
 
 let tray = null;
 let captureWin = null;
@@ -125,19 +125,23 @@ ipcMain.handle('ask-ai', async (event, { prompt, base64Image }) => {
     throw new Error('시스템 환경변수 GEMINI_API_KEY가 설정되어 있지 않습니다.\nWindows 제어판 또는 시스템 속성에서 GEMINI_API_KEY 환경변수를 설정하고 앱을 재실행해 주세요.');
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-  const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   const base64DataOnly = base64Image.split(',')[1];
-  const imagePart = {
-    inlineData: {
-      data: base64DataOnly,
-      mimeType: 'image/png'
-    }
-  };
 
-  const result = await model.generateContent([prompt, imagePart]);
-  return result.response.text();
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: [
+      prompt,
+      {
+        inlineData: {
+          data: base64DataOnly,
+          mimeType: 'image/png'
+        }
+      }
+    ]
+  });
+
+  return response.text;
 });
 
 ipcMain.handle('get-startup-setting', () => {
