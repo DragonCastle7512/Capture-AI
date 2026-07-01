@@ -145,7 +145,7 @@ ipcMain.handle('ask-ai', async (event, { prompt, base64Image }) => {
 });
 
 function getStartupFilePath() {
-  return path.join(app.getPath('startup'), 'capture-ai-startup.vbs');
+  return path.join(app.getPath('appData'), 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup', 'capture-ai-startup.vbs');
 }
 
 ipcMain.handle('get-startup-setting', () => {
