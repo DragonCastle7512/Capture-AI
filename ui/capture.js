@@ -1,5 +1,7 @@
 let isDrawing = false;
 let startX, startY, endX, endY;
+let mouseX = 0, mouseY = 0;
+let isMouseIn = false;
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 let bgImage = new Image();
@@ -27,10 +29,8 @@ function drawCanvas() {
   
   ctx.clearRect(0, 0, wWidth, wHeight);
   
-  // 1. 원본 전체 화면 그리기
   ctx.drawImage(bgImage, 0, 0, wWidth, wHeight);
   
-  // 2. 전체 화면에 어두운 반투명 오버레이 덮기
   ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
   ctx.fillRect(0, 0, wWidth, wHeight);
 
@@ -41,7 +41,6 @@ function drawCanvas() {
     const h = Math.abs(startY - endY);
 
     if (w > 0 && h > 0) {
-      // 3. 드래그한 선택 영역만 밝게 (어두운 레이어 구멍 뚫기)
       ctx.save();
       ctx.beginPath();
       ctx.rect(x, y, w, h);
@@ -49,19 +48,28 @@ function drawCanvas() {
       ctx.drawImage(bgImage, 0, 0, wWidth, wHeight);
       ctx.restore();
 
-      // 4. 세련된 네온 블루 보더 라인 추가
-      ctx.strokeStyle = '#00d2ff';
+      ctx.strokeStyle = '#a5a5a5';
       ctx.lineWidth = 1.5;
       ctx.strokeRect(x, y, w, h);
-      
-      // 코너 모서리 표시로 세련미 추가 (Premium Design)
-      ctx.fillStyle = '#00d2ff';
-      const cornerSize = 4;
-      ctx.fillRect(x - 1, y - 1, cornerSize, cornerSize);
-      ctx.fillRect(x + w - cornerSize + 1, y - 1, cornerSize, cornerSize);
-      ctx.fillRect(x - 1, y + h - cornerSize + 1, cornerSize, cornerSize);
-      ctx.fillRect(x + w - cornerSize + 1, y + h - cornerSize + 1, cornerSize, cornerSize);
     }
+  }
+
+  if (isMouseIn) {
+    ctx.save();
+    
+    ctx.strokeStyle = '#dfdfdf';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    
+    // 가로선
+    ctx.moveTo(mouseX - 10, mouseY);
+    ctx.lineTo(mouseX + 10, mouseY);
+    // 세로선
+    ctx.moveTo(mouseX, mouseY - 10);
+    ctx.lineTo(mouseX, mouseY + 10);
+    ctx.stroke();
+    
+    ctx.restore();
   }
 }
 
@@ -77,9 +85,23 @@ canvas.addEventListener('mousedown', (e) => {
 });
 
 canvas.addEventListener('mousemove', (e) => {
-  if (!isDrawing) return;
-  endX = e.clientX;
-  endY = e.clientY;
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  isMouseIn = true;
+  if (isDrawing) {
+    endX = e.clientX;
+    endY = e.clientY;
+  }
+  drawCanvas();
+});
+
+canvas.addEventListener('mouseenter', () => {
+  isMouseIn = true;
+  drawCanvas();
+});
+
+canvas.addEventListener('mouseleave', () => {
+  isMouseIn = false;
   drawCanvas();
 });
 
