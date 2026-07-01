@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Gemini AI Assistant</title>
+  <link rel="stylesheet" href="query.css">
+</head>
+<body>
+  <div class="glass-container">
+    <div class="window-header">
+      <span class="window-title">✨ Gemini 캡처 분석 AI</span>
+      <div class="header-right">
+        <label class="startup-label">
+          <input type="checkbox" id="startup-checkbox"> 시작 프로그램 등록
+        </label>
+        <button id="close-btn" class="close-icon">&times;</button>
+      </div>
+    </div>
+    
+    <div class="main-layout">
+      <!-- 캡처 이미지 미리보기 영역 -->
+      <div class="image-section">
+        <img id="preview-img" src="" alt="Captured Image">
+      </div>
+      
+      <!-- AI 응답 결과 표시 영역 -->
+      <div class="response-section">
+        <div id="response-box" class="response-box placeholder-text">
+          질문을 입력하고 Enter를 누르시면 AI 분석 결과가 표시됩니다.
+        </div>
+      </div>
+    </div>
+    
+    <!-- 프롬프트 입력 영역 -->
+    <div class="input-section">
+      <textarea id="prompt-input" placeholder="여기에 이미지에 대해 물어볼 질문을 입력하세요... (Enter로 전송, Shift+Enter로 줄바꿈)" autofocus></textarea>
+      <button id="send-btn" class="send-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" class="send-svg">
+          <path fill="currentColor" d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <script src="query.js"></script>
+</body>
+</html>
