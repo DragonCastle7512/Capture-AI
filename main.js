@@ -144,17 +144,33 @@ ipcMain.handle('ask-ai', async (event, { prompt, base64Image }) => {
   return response.text;
 });
 
+function getStartupFilePath() {
+  return path.join(app.getPath('startup'), 'capture-ai-startup.vbs');
+}
+
 ipcMain.handle('get-startup-setting', () => {
-  const settings = app.getLoginItemSettings();
-  return settings.openAtLogin;
+  return fs.existsSync(getStartupFilePath());
 });
 
 ipcMain.handle('set-startup-setting', (event, openAtLogin) => {
-  app.setLoginItemSettings({
-    openAtLogin: openAtLogin,
-    openAsHidden: true
-  });
-  return true;
+  const filePath = getStartupFilePath();
+  try {
+    if (openAtLogin) {
+      const projectDir = __dirname;
+      const vbsContent = `Set WshShell = CreateObject("WScript.Shell")\nWshShell.Run "cmd.exe /c cd /d ""${projectDir}"" && npm start", 0, False\n`;
+      fs.writeFileSync(filePath, vbsContent, 'utf-8');
+      console.log('시작 프로그램 등록 완료:', filePath);
+    } else {
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+        console.log('시작 프로그램 해제 완료');
+      }
+    }
+    return true;
+  } catch (err) {
+    console.error('시작 프로그램 설정 오류:', err);
+    throw err;
+  }
 });
 
 app.whenReady().then(() => {
