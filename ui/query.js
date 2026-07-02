@@ -3,6 +3,7 @@ const previewImg = document.getElementById('preview-img');
 const responseBox = document.getElementById('response-box');
 const sendBtn = document.getElementById('send-btn');
 const closeBtn = document.getElementById('close-btn');
+const minimizeBtn = document.getElementById('minimize-btn');
 const startupCheckbox = document.getElementById('startup-checkbox');
 
 let capturedImageBase64 = null;
@@ -110,6 +111,9 @@ promptInput.addEventListener('keydown', (e) => {
 sendBtn.addEventListener('click', handleSend);
 closeBtn.addEventListener('click', () => {
   window.electronAPI.closeQueryWindow();
+});
+minimizeBtn.addEventListener('click', () => {
+  window.electronAPI.minimizeQueryWindow();
 });
 
 // ESC 키로 질문 창 닫기

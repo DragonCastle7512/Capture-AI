@@ -107,6 +107,26 @@ body {
   color: #ef4444;
 }
 
+.minimize-icon {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.minimize-icon:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
 /* Main Layout */
 .main-layout {
   flex: 1;
