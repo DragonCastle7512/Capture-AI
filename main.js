@@ -119,6 +119,12 @@ ipcMain.on('close-query-window', () => {
   }
 });
 
+ipcMain.on('minimize-query-window', () => {
+  if (queryWin) {
+    queryWin.minimize();
+  }
+});
+
 ipcMain.handle('ask-ai', async (event, { prompt, base64Image }) => {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {

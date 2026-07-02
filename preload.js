@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // Query Window IPC
   onQueryImage: (callback) => ipcRenderer.on('query-image', (event, value) => callback(value)),
   closeQueryWindow: () => ipcRenderer.send('close-query-window'),
+  minimizeQueryWindow: () => ipcRenderer.send('minimize-query-window'),
   askAI: (prompt, base64Image) => ipcRenderer.invoke('ask-ai', { prompt, base64Image }),
   
   // Startup setting IPC
