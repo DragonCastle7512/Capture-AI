@@ -77,9 +77,26 @@ function showQueryWindow(base64Image) {
     queryWin = null;
   }
 
+  let width = 760;
+  let height = 580;
+  try {
+    if (fs.existsSync(settingsFilePath)) {
+      const data = fs.readFileSync(settingsFilePath, 'utf-8');
+      const settings = JSON.parse(data);
+      if (settings.width && settings.height) {
+        width = settings.width;
+        height = settings.height;
+      }
+    }
+  } catch (err) {
+    console.error('창 크기 설정 불러오기 오류:', err);
+  }
+
   queryWin = new BrowserWindow({
-    width: 760,
-    height: 580,
+    width: width,
+    height: height,
+    minWidth: 400,
+    minHeight: 300,
     frame: false,
     transparent: true,
     alwaysOnTop: true,
