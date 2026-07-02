@@ -121,6 +121,10 @@ function showQueryWindow(base64Image) {
     }
   });
 
+  queryWin.on('closed', () => {
+    queryWin = null;
+  });
+
   queryWin.loadFile(path.join(__dirname, 'ui', 'query.html'));
 
   queryWin.webContents.once('did-finish-load', () => {
@@ -146,8 +150,7 @@ ipcMain.on('capture-cancel', () => {
 
 ipcMain.on('close-query-window', () => {
   if (queryWin) {
-    queryWin.destroy();
-    queryWin = null;
+    queryWin.close();
   }
 });
 
