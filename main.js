@@ -7,6 +7,7 @@ const { GoogleGenAI } = require('@google/genai');
 let tray = null;
 let captureWin = null;
 let queryWin = null;
+const settingsFilePath = path.join(app.getPath('userData'), 'window-settings.json');
 
 const transparentIconBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
@@ -86,6 +87,20 @@ function showQueryWindow(base64Image) {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true
+    }
+  });
+
+  queryWin.on('close', () => {
+    try {
+      const bounds = queryWin.getBounds();
+      const settings = {
+        width: bounds.width,
+        height: bounds.height
+      };
+      fs.writeFileSync(settingsFilePath, JSON.stringify(settings), 'utf-8');
+      console.log('창 크기 저장 성공:', settings);
+    } catch (err) {
+      console.error('창 크기 저장 중 오류 발생:', err);
     }
   });
 
